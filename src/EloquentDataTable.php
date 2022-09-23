@@ -189,8 +189,8 @@ class EloquentDataTable extends QueryDataTable
                     $foreign = $pivot.'.'.$tablePK;
                     $other = $related->getQualifiedKeyName();
 
-                    $lastQuery->addSelect($table.'.'.$relationColumn);
-                    $this->performJoin($table, $foreign, $other);
+//                     $lastQuery->addSelect($table.'.'.$relationColumn);
+//                     $this->performJoin($table, $foreign, $other);
 
                     break;
 
@@ -206,7 +206,7 @@ class EloquentDataTable extends QueryDataTable
                     $foreign = $pivot.'.'.$tablePK;
                     $other = $related->getQualifiedKeyName();
 
-                    $lastQuery->addSelect($lastQuery->getModel()->getTable().'.*');
+//                     $lastQuery->addSelect($lastQuery->getModel()->getTable().'.*');
 
                     break;
 
