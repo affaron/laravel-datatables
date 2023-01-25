@@ -720,6 +720,7 @@ class QueryDataTable extends DataTableAbstract
                     if ($this->hasFilterColumn($column)) {
                         $this->applyFilterColumn($query, $column, $keyword, 'or');
                     } else {
+                        $column = $this->resolveRelationColumn($column);
                         $this->compileQuerySearch($query, $column, $keyword);
                     }
                 });
