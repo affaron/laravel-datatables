@@ -190,9 +190,6 @@ class EloquentDataTable extends QueryDataTable
                     $foreign = $pivot.'.'.$tablePK;
                     $other = $related->getQualifiedKeyName();
 
-                    $lastQuery->addSelect($table.'.'.$relationColumn);
-                    $this->performJoin($table, $foreign, $other);
-
                     break;
 
                 case $model instanceof HasOneThrough:
@@ -206,8 +203,6 @@ class EloquentDataTable extends QueryDataTable
                     $tablePK = $model->getSecondLocalKeyName();
                     $foreign = $pivot.'.'.$tablePK;
                     $other = $related->getQualifiedKeyName();
-
-                    $lastQuery->addSelect($lastQuery->getModel()->getTable().'.*');
 
                     break;
 
@@ -246,20 +241,24 @@ class EloquentDataTable extends QueryDataTable
     protected function performJoin($table, $foreign, $other, $type = 'left'): string
     {
         $alias = $table;
-        $existingTableNames = [$this->getBaseQueryBuilder()->from];
+        $existingTablesKeys = [];
+        $joins = [$this->getBaseQueryBuilder()->from];
 
         foreach ((array) $this->getBaseQueryBuilder()->joins as $key => $join) {
-            $existingTableNames[] = Str::before($join->table, ' as ');
+            $existingTablesKeys[] = $join->wheres[0]['first'];
+            $existingTablesKeys[] = $join->wheres[0]['second'];
+            $joins[] = $join->table;
         }
 
-        if (in_array($table, $existingTableNames)) {
-            $index = count(array_filter($existingTableNames, function ($n) use ($table) { return $n === $table; })) + 1;
+        if (! in_array($table, $joins)) {
+            $this->getBaseQueryBuilder()->join($table, $foreign, '=', $other, $type);
+        } elseif (!in_array($foreign, $existingTablesKeys)) {
+            $index = count(array_filter($joins, function ($n) use ($table) { return $n === $table; })) + 1;
             $alias = $table . '_' . $index;
             $other = str_replace($table, $alias, $other);
             $table = $table . ' as ' . $alias;
+            $this->getBaseQueryBuilder()->join($table, $foreign, '=', $other, $type);
         }
-
-        $this->getBaseQueryBuilder()->join($table, $foreign, '=', $other, $type);
 
         return $alias;
     }
