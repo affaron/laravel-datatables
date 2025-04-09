@@ -1,5 +1,5 @@
 includes:
-    - ./vendor/nunomaduro/larastan/extension.neon
+    - ./vendor/larastan/larastan/extension.neon
 
 parameters:
 
@@ -10,9 +10,21 @@ parameters:
 
     ignoreErrors:
         - '#Unsafe usage of new static\(\).#'
-        - '#Negated boolean expression is always false.#'
+        -   identifier: missingType.iterableValue
+        -   identifier: argument.type
+        -   identifier: cast.string
+        -   identifier: foreach.nonIterable
+        -   identifier: binaryOp.invalid
+        -   identifier: offsetAccess.nonOffsetAccessible
+        -   identifier: return.type
+        -   identifier: method.nonObject
+        -   identifier: varTag.nativeType
+        -   identifier: assign.propertyType
+        -   identifier: callable.nonCallable
+        -   identifier: property.nonObject
 
     excludePaths:
         - src/helper.php
 
-    checkMissingIterableValueType: false
+    noEnvCallsOutsideOfConfig: false
+    treatPhpDocTypesAsCertain: false

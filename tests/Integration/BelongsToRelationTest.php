@@ -3,6 +3,7 @@
 namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Tests\Models\Post;
 use Yajra\DataTables\Tests\TestCase;
@@ -11,13 +12,13 @@ class BelongsToRelationTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_returns_all_records_with_the_relation_when_called_without_parameters()
     {
         $response = $this->call('GET', '/relations/belongsTo');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 60,
+            'draw' => 0,
+            'recordsTotal' => 60,
             'recordsFiltered' => 60,
         ]);
 
@@ -25,7 +26,7 @@ class BelongsToRelationTest extends TestCase
         $this->assertCount(60, $response->json()['data']);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_perform_global_search_on_the_relation()
     {
         $response = $this->getJsonResponse([
@@ -33,8 +34,8 @@ class BelongsToRelationTest extends TestCase
         ]);
 
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 60,
+            'draw' => 0,
+            'recordsTotal' => 60,
             'recordsFiltered' => 3,
         ]);
 
@@ -54,24 +55,24 @@ class BelongsToRelationTest extends TestCase
         return $this->call('GET', '/relations/belongsTo', array_merge($data, $params));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_sort_using_the_relation_with_pagination()
     {
         $response = $this->getJsonResponse([
             'order' => [
                 [
                     'column' => 1,
-                    'dir'    => 'desc',
+                    'dir' => 'desc',
                 ],
             ],
             'length' => 10,
-            'start'  => 0,
-            'draw'   => 1,
+            'start' => 0,
+            'draw' => 1,
         ]);
 
         $response->assertJson([
-            'draw'            => 1,
-            'recordsTotal'    => 60,
+            'draw' => 1,
+            'recordsTotal' => 60,
             'recordsFiltered' => 60,
         ]);
 
@@ -83,8 +84,6 @@ class BelongsToRelationTest extends TestCase
     {
         parent::setUp();
 
-        $this->app['router']->get('/relations/belongsTo', function (DataTables $datatables) {
-            return $datatables->eloquent(Post::with('user')->select('posts.*'))->toJson();
-        });
+        $this->app['router']->get('/relations/belongsTo', fn (DataTables $datatables) => $datatables->eloquent(Post::with('user')->select('posts.*'))->toJson());
     }
 }

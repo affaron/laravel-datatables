@@ -13,14 +13,14 @@ class HelperTest extends TestCase
     {
         $data = ['id' => 1];
         $item = [
-            'name'    => 'user',
+            'name' => 'user',
             'content' => 'John',
-            'order'   => false,
+            'order' => false,
         ];
 
         $data = Helper::includeInArray($item, $data);
         $expected = [
-            'id'   => 1,
+            'id' => 1,
             'user' => 'John',
         ];
         $this->assertEquals($expected, $data);
@@ -29,20 +29,20 @@ class HelperTest extends TestCase
     public function test_include_in_array_with_order()
     {
         $data = [
-            'id'  => 1,
+            'id' => 1,
             'foo' => 'bar',
         ];
         $item = [
-            'name'    => 'user',
+            'name' => 'user',
             'content' => 'John',
-            'order'   => 1,
+            'order' => 1,
         ];
 
         $data = Helper::includeInArray($item, $data);
         $expected = [
-            'id'   => 1,
+            'id' => 1,
             'user' => 'John',
-            'foo'  => 'bar',
+            'foo' => 'bar',
         ];
         $this->assertEquals($expected, $data);
     }
@@ -50,19 +50,19 @@ class HelperTest extends TestCase
     public function test_include_in_array_with_order_outside_of_array_length()
     {
         $data = [
-            'id'  => 1,
+            'id' => 1,
             'foo' => 'bar',
         ];
         $item = [
-            'name'    => 'user',
+            'name' => 'user',
             'content' => 'John',
-            'order'   => 2,
+            'order' => 2,
         ];
 
         $data = Helper::includeInArray($item, $data);
         $expected = [
-            'id'   => 1,
-            'foo'  => 'bar',
+            'id' => 1,
+            'foo' => 'bar',
             'user' => 'John',
         ];
         $this->assertEquals($expected, $data);
@@ -72,7 +72,7 @@ class HelperTest extends TestCase
     {
         $content = '{!! $id !!}';
         $data = ['id' => 2];
-        $obj = new stdClass();
+        $obj = new stdClass;
         $obj->id = 2;
 
         $compiled = Helper::compileContent($content, $data, $obj);
@@ -83,7 +83,7 @@ class HelperTest extends TestCase
     {
         $content = 'string';
         $data = ['id' => 2];
-        $obj = new stdClass();
+        $obj = new stdClass;
         $obj->id = 2;
 
         $compiled = Helper::compileContent($content, $data, $obj);
@@ -94,7 +94,7 @@ class HelperTest extends TestCase
     {
         $content = 1;
         $data = ['id' => 2];
-        $obj = new stdClass();
+        $obj = new stdClass;
         $obj->id = 2;
 
         $compiled = Helper::compileContent($content, $data, $obj);
@@ -103,11 +103,9 @@ class HelperTest extends TestCase
 
     public function test_compile_content_function()
     {
-        $content = function ($obj) {
-            return $obj->id;
-        };
+        $content = fn ($obj) => $obj->id;
         $data = ['id' => 2];
-        $obj = new stdClass();
+        $obj = new stdClass;
         $obj->id = 2;
 
         $compiled = Helper::compileContent($content, $data, $obj);
@@ -124,7 +122,7 @@ class HelperTest extends TestCase
             }
         };
         $data = ['id' => 2];
-        $obj = new stdClass();
+        $obj = new stdClass;
         $obj->id = 2;
 
         $compiled = Helper::compileContent($content, $data, $obj);
@@ -143,28 +141,28 @@ class HelperTest extends TestCase
     {
         $carbon = Carbon::createFromDate(2015, 1, 1);
         $data = [
-            'id'         => 1,
-            'name'       => 'John',
+            'id' => 1,
+            'name' => 'John',
             'created_at' => '1234',
         ];
-        $class = new stdClass();
+        $class = new stdClass;
         $class->id = 1;
         $class->name = 'John';
         $class->created_at = $carbon;
 
         $compiled = Helper::getMixedValue($data, $class);
         $expected = [
-            'id'         => 1,
-            'name'       => 'John',
+            'id' => 1,
+            'name' => 'John',
             'created_at' => $carbon,
-            'model'      => $class,
+            'model' => $class,
         ];
         $this->assertEquals($expected, $compiled);
     }
 
     public function test_cast_to_array_an_object()
     {
-        $class = new stdClass();
+        $class = new stdClass;
         $class->id = 1;
         $compiled = Helper::castToArray($class);
         $this->assertEquals(['id' => 1], $compiled);
@@ -190,20 +188,20 @@ class HelperTest extends TestCase
 
     public function test_convert_to_array()
     {
-        $row = new stdClass();
+        $row = new stdClass;
         $row->id = 1;
         $row->name = 'John';
         $row->posts = ['id' => 1, 'title' => 'Demo'];
-        $author = new stdClass();
+        $author = new stdClass;
         $author->name = 'Billy';
         $row->author = $author;
 
         $result = Helper::convertToArray($row);
         $expected = [
-            'id'    => 1,
-            'name'  => 'John',
+            'id' => 1,
+            'name' => 'John',
             'posts' => [
-                'id'    => 1,
+                'id' => 1,
                 'title' => 'Demo',
             ],
             'author' => [
@@ -217,13 +215,13 @@ class HelperTest extends TestCase
     {
         $data = [
             [
-                'id'         => 1,
-                'author'     => 'John',
+                'id' => 1,
+                'author' => 'John',
                 'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', '2015-1-1 00:00:00'),
             ],
             [
-                'id'         => 2,
-                'author'     => 'Billy',
+                'id' => 2,
+                'author' => 'Billy',
                 'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', '2015-1-1 00:00:00'),
             ],
         ];

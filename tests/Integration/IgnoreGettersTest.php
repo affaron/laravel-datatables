@@ -3,6 +3,7 @@
 namespace Yajra\DataTables\Tests\Integration;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use PHPUnit\Framework\Attributes\Test;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Tests\Models\User;
 use Yajra\DataTables\Tests\TestCase;
@@ -11,11 +12,11 @@ class IgnoreGettersTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @test */
+    #[Test]
     public function it_return_the_default_value_when_attribute_is_null()
     {
         $user = User::create([
-            'name'  => 'foo',
+            'name' => 'foo',
             'email' => 'foo@bar.com',
             'color' => null,
         ]);
@@ -24,17 +25,15 @@ class IgnoreGettersTest extends TestCase
         $this->assertEquals('#000000', $user->refresh()->toArray()['color']);
     }
 
-    /** @test */
+    #[Test]
     public function it_return_the_getter_value_without_ignore_getters()
     {
-        $this->app['router']->get('/ignore-getters', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with('posts.user')->select('users.*'))->toJson();
-        });
+        $this->app['router']->get('/ignore-getters', fn (DataTables $datatables) => $datatables->eloquent(User::with('posts.user')->select('users.*'))->toJson());
 
         $response = $this->call('GET', '/ignore-getters');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
@@ -46,17 +45,15 @@ class IgnoreGettersTest extends TestCase
         $this->assertCount(20, $response->json()['data']);
     }
 
-    /** @test */
+    #[Test]
     public function it_ignore_the_getter_value_with_ignore_getters()
     {
-        $this->app['router']->get('/ignore-getters', function (DataTables $datatables) {
-            return $datatables->eloquent(User::with('posts.user')->select('users.*'))->ignoreGetters()->toJson();
-        });
+        $this->app['router']->get('/ignore-getters', fn (DataTables $datatables) => $datatables->eloquent(User::with('posts.user')->select('users.*'))->ignoreGetters()->toJson());
 
         $response = $this->call('GET', '/ignore-getters');
         $response->assertJson([
-            'draw'            => 0,
-            'recordsTotal'    => 20,
+            'draw' => 0,
+            'recordsTotal' => 20,
             'recordsFiltered' => 20,
         ]);
 
